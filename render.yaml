@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: lem-laravel
+    runtime: docker
+    repo: https://github.com/19-5-12/Lem
+    branch: master
+    plan: free
+    envVars:
+      - fromGroup: lem-app-env
+    buildFilter:
+      paths:
+        - ./*
+    dockerfilePath: Dockerfile 
