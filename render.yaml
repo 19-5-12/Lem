@@ -1,13 +1,10 @@
 services:
   - type: web
-    name: lem-laravel
+    name: lem-birthday-app
     runtime: docker
     repo: https://github.com/19-5-12/Lem
     branch: master
-    plan: free
     dockerfilePath: Dockerfile
-    buildFilter:
-      paths:
-        - ./*
+    plan: free
     envVars:
       - fromGroup: lem-app-env
