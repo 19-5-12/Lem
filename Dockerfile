@@ -25,8 +25,9 @@ RUN chown -R www-data:www-data /var/www
 COPY nginx/default.conf /etc/nginx/sites-available/default
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Create a simple script to start Nginx and PHP-FPM
+# Create a simple script to start Nginx and PHP-FPM, and link storage
 RUN echo '#!/bin/bash' > /usr/local/bin/start.sh \
+    && echo 'php artisan storage:link' >> /usr/local/bin/start.sh \
     && echo 'service nginx start' >> /usr/local/bin/start.sh \
     && echo 'php-fpm' >> /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
