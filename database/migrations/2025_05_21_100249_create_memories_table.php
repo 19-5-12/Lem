@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('memories', function (Blueprint $table) {
             $table->id();
             $table->text('caption')->nullable();
-            $table->json('image_paths')->nullable()->change(); // store multiple image paths
+            $table->json('image_paths')->nullable(); // store multiple image paths
             $table->timestamps();
         });
     }
