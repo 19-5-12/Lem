@@ -5,9 +5,9 @@ services:
     repo: https://github.com/19-5-12/Lem
     branch: master
     plan: free
-    envVars:
-      - fromGroup: lem-app-env
+    dockerfilePath: Dockerfile
     buildFilter:
       paths:
         - ./*
-    dockerfilePath: Dockerfile 
+    envVars:
+      - fromGroup: lem-app-env

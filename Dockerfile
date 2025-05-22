@@ -1,22 +1,24 @@
-FROM composer:2 as vendor
-
-WORKDIR /app
-
-COPY composer.* ./
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
+# Step 1: Base image with PHP and extensions
 FROM php:8.2-fpm
 
-WORKDIR /var/www/html
-
+# Step 2: Install dependencies
 RUN apt-get update && apt-get install -y \
-    git unzip curl libpq-dev libzip-dev zip \
+    git unzip curl libpq-dev libzip-dev zip nodejs npm \
     && docker-php-ext-install pdo pdo_pgsql zip
 
-COPY --from=vendor /app /var/www/html
+# Step 3: Set working directory
+WORKDIR /var/www/html
 
+# Step 4: Copy project files
 COPY . .
 
-RUN chmod -R 777 storage bootstrap/cache
+# Step 5: Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
 
-CMD php artisan migrate --force && php artisan storage:link && php-fpm 
+# Step 6: Laravel storage & permissions
+RUN php artisan storage:link && \
+    chmod -R 777 storage bootstrap/cache
+
+# Step 7: Run migrations and start PHP
+CMD php artisan migrate --force && php-fpm
