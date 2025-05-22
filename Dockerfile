@@ -1,8 +1,8 @@
 # Use official PHP image with required extensions
 FROM php:8.2-fpm
 
-# Install system dependencies and Nginx
-RUN apt-get update && apt-get install -y --no-install-recommends 
+# Install system dependencies, Node.js, npm, and Nginx
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git unzip curl libpq-dev libzip-dev zip nodejs npm nginx \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo pdo_pgsql zip
@@ -13,8 +13,7 @@ WORKDIR /var/www
 # Copy project files
 COPY . .
 
-# Install Composer (if not using a multi-stage build for vendors)
-# If you used the previous multi-stage build, this might be redundant or need adjustment
+# Install Composer (assuming composer.json is in the root)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
@@ -22,7 +21,7 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chmod -R 775 storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www
 
-# Copy Nginx configuration - we will create this next
+# Copy Nginx configuration
 COPY nginx/default.conf /etc/nginx/sites-available/default
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
